@@ -8,6 +8,7 @@ public static class EventManager
 
     public static Action<GameObject> selectMovingObject;
     public static Action<GameObject> assemblyObject;
+    public static Action successfulPanel;
 
 }
 

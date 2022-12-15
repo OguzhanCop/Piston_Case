@@ -40,7 +40,7 @@ public class PistonAssembly : MonoBehaviour
    
 
 
-    void AssemblyObject(GameObject assemblyObject)
+    void AssemblyObject(GameObject assemblyObject)                                      // Býrakýlan objenin bilgisi dýþarýdan gelýyor ve buna göre ilgili fonksiyonu çalýþtýrýyoruz
     {
         switch (assemblyObject.name)
         {
@@ -52,7 +52,7 @@ public class PistonAssembly : MonoBehaviour
                 PinClip2Assembly(assemblyObject);
                 break;
             case "piston":
-                Debug.Log("4");
+                
                 break;
             case "rod":
                 RodAssembly(assemblyObject);
@@ -77,33 +77,35 @@ public class PistonAssembly : MonoBehaviour
                 break;
         }
     }
-    void RodAssembly(GameObject rod)
+    void RodAssembly(GameObject rod)                                                                                                    // Rod Montaj Fonksiyonu
     {
-        if (data.rodAssamblyCheck == true)
+        if (data.rodAssamblyCheck == true)                                                                                              // Montaj yapýlacak objenin konumu bool kontrolü 
         {
-            data.assemblyActive = true;
-            rod.transform.DOMove(piston.transform.GetChild(0).position + new Vector3(0, -0.04f, 0), 1.5f, false).OnComplete(() =>
+            data.assemblyActive = true;                                                                                                 // Montaj iþlemi baþladý
+            rod.transform.DOMove(piston.transform.GetChild(0).position + new Vector3(0, -0.04f, 0), 1.5f, false).OnComplete(() =>       // Objenin montaj animasyonu 
                 rod.transform.DOMove(piston.transform.GetChild(0).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
-            rod.transform.parent = piston.transform;
-            piston.transform.GetChild(0).gameObject.SetActive(false);
-        }
+            StartCoroutine(AssemblyFinish());                                                                                           // Montaj bitirmek için gecikme baþlatýlýyor
+            rod.transform.parent = piston.transform;                                                                                    // Objeyi çocuk obje yapyoruz
+            piston.transform.GetChild(0).gameObject.SetActive(false);                                                                   // Þeffaf objeyi gizliyoruz               
+            EventManager.successfulPanel.Invoke();                                                                                      // Tebrikler mesajýný içeren event çalýþtýrýlýyor
+        } 
 
 
     }
     void WristPinAssembly(GameObject wristPin)
     {
-        if (data.wristPinAssamblyCheck == true && data.rodAssamblyCheck == true)
+        if (data.wristPinAssamblyCheck == true && data.rodAssamblyCheck == true)                                                        // Montaj yapýlacak obje ve kendisinden önce montaj yapýlmýþ olmasý gereken obje kontrolü
         {
             data.assemblyActive = true;
             wristPin.transform.DOMove(piston.transform.GetChild(1).position + new Vector3(-0.08f, 0, -0.08f), 1.5f, false).OnComplete(() =>
                wristPin.transform.DOMove(piston.transform.GetChild(1).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             wristPin.transform.parent = piston.transform;
             piston.transform.GetChild(1).gameObject.SetActive(false);
-            rod.GetComponent<MeshCollider>().enabled=false;
+            rod.GetComponent<MeshCollider>().enabled=false;                                                                             // Wrist pin takýlýyken rod objesinin demonte edilememsi gerekiyor objenin tutulmaasý engellenýyor
+            EventManager.successfulPanel.Invoke();
 
         }
 
@@ -118,10 +120,11 @@ public class PistonAssembly : MonoBehaviour
             pinClip1.transform.DOMove(piston.transform.GetChild(2).position + new Vector3(-0.04f, 0, -0.04f), 1.5f, false).OnComplete(() =>
                pinClip1.transform.DOMove(piston.transform.GetChild(2).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             pinClip1.transform.parent = piston.transform;
             piston.transform.GetChild(2).gameObject.SetActive(false);
             wristPin.GetComponent<MeshCollider>().enabled = false;
+            EventManager.successfulPanel.Invoke();
         }
 
 
@@ -135,9 +138,10 @@ public class PistonAssembly : MonoBehaviour
             pinClip2.transform.DOMove(piston.transform.GetChild(3).position + new Vector3(0.04f, 0, 0.04f), 1.5f, false).OnComplete(() =>
                  pinClip2.transform.DOMove(piston.transform.GetChild(3).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             pinClip2.transform.parent = piston.transform;
             piston.transform.GetChild(3).gameObject.SetActive(false);
+            EventManager.successfulPanel.Invoke();
         }
     }
 
@@ -145,15 +149,16 @@ public class PistonAssembly : MonoBehaviour
 
     void RodBearingRodSideAssembly(GameObject rodBearingRodSide)
     {
-        if (data.rodBearingRodSideAssamblyCheck == true && data.rodCapAssamblyCheck == false)
+        if (data.rodBearingRodSideAssamblyCheck == true && data.rodCapAssamblyCheck == false)                                                // Montaj yapýlacak obje ve kendisinden önce yapýlmamasý gereken montaj kontrolü
         {
             data.assemblyActive = true;
             rodBearingRodSide.transform.DOMove(rod.transform.GetChild(0).position + new Vector3(0, -0.04f, 0), 1.5f, false).OnComplete(() =>
                rodBearingRodSide.transform.DOMove(rod.transform.GetChild(0).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             rodBearingRodSide.transform.parent = rod.transform;
             rod.transform.GetChild(0).gameObject.SetActive(false);
+            EventManager.successfulPanel.Invoke();
         }
 
     }
@@ -166,9 +171,10 @@ public class PistonAssembly : MonoBehaviour
             rodBearingCapSide.transform.DOMove(rodCap.transform.GetChild(0).position + new Vector3(0, 0.04f, 0), 1.5f, false).OnComplete(() =>
                rodBearingCapSide.transform.DOMove(rodCap.transform.GetChild(0).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             rodBearingCapSide.transform.parent = rodCap.transform;
             rodCap.transform.GetChild(0).gameObject.SetActive(false);
+            EventManager.successfulPanel.Invoke();
         }
 
     }
@@ -181,11 +187,12 @@ public class PistonAssembly : MonoBehaviour
             rodCap.transform.DOMove(rod.transform.GetChild(1).position + new Vector3(0, -0.04f, 0), 1.5f, false).OnComplete(() =>
                rodCap.transform.DOMove(rod.transform.GetChild(1).position, 1.5f, false));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             rodCap.transform.parent = rod.transform;
             rod.transform.GetChild(1).gameObject.SetActive(false);
             rodBearingCapSide.GetComponent<MeshCollider>().enabled = false;
             rodBearingRodSide.GetComponent<MeshCollider>().enabled = false;
+            EventManager.successfulPanel.Invoke();
         }
 
     }
@@ -199,10 +206,11 @@ public class PistonAssembly : MonoBehaviour
             rodBolt1Sequence.Append(rodBolt1.transform.DOMove(rodCap.transform.GetChild(1).position, 1.5f, false));
             rodBolt1Sequence.Join(rodBolt1.transform.DORotate(new Vector3(0,360,0),0.15f,RotateMode.FastBeyond360).SetRelative(true).SetLoops(10).SetEase(Ease.Linear));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             rodBolt1.transform.parent = rodCap.transform;
             rodCap.transform.GetChild(1).gameObject.SetActive(false);
-            rodCap.GetComponent<MeshCollider>().enabled = false;       
+            rodCap.GetComponent<MeshCollider>().enabled = false;
+            EventManager.successfulPanel.Invoke();
         }
 
     }
@@ -216,14 +224,15 @@ public class PistonAssembly : MonoBehaviour
             rodBolt2Sequence.Append(rodBolt2.transform.DOMove(rodCap.transform.GetChild(2).position, 1.5f, false));
             rodBolt2Sequence.Join(rodBolt2.transform.DORotate(new Vector3(0, 360, 0), 0.15f, RotateMode.FastBeyond360).SetRelative(true).SetLoops(10).SetEase(Ease.Linear));
 
-            StartCoroutine(assemblyFinish());
+            StartCoroutine(AssemblyFinish());
             rodBolt2.transform.parent = rodCap.transform;
             rodCap.transform.GetChild(2).gameObject.SetActive(false);
             rodCap.GetComponent<MeshCollider>().enabled = false;
+            EventManager.successfulPanel.Invoke();
         }
 
     }
-    IEnumerator assemblyFinish()
+    IEnumerator AssemblyFinish()                                                        // Montaj animasyonlarý bittikten sonra bool ile montaj aktifliði deðiþtirliyor
     {
         yield return new WaitForSecondsRealtime(3.2f);
         data.assemblyActive = false;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PistonAssemblyIndicator : MonoBehaviour
+public class PistonAssemblyManager : MonoBehaviour
 {
     [SerializeField]
     GameObject pinClip1;
@@ -41,64 +41,64 @@ public class PistonAssemblyIndicator : MonoBehaviour
     }
 
 
-    void SelectMovingObject(GameObject movingObject)
+    void SelectMovingObject(GameObject movingObject)                                                            // Sürüklenen objenin bilgisi dýþarýdan gelýyor ve buna göre fonksiyonlar çalýþtýrýlýyor
     {
         switch (movingObject.name)
         {
             
             case "pin_clip_1":
-                PinClip1Assembly(movingObject);
+                PinClip1AssemblyControl(movingObject);
                 break;
             case "pin_clip_2":
-                PinClip2Assembly(movingObject);
+                PinClip2AssemblyControl(movingObject);
                 break;
             case "piston":
-                Debug.Log("4");
+                
                 break;
             case "rod":
-                RodAssembly(movingObject);
+                RodAssemblyControl(movingObject);
                 break;
             case "rod_bearing_cap_side":
-                RodBearingCapSideAssembly(movingObject);
+                RodBearingCapSideAssemblyControl(movingObject);
                 break;
             case "rod_bearing_rod_side":
-                RodBearingRodSideAssembly(movingObject);
+                RodBearingRodSideAssemblyControl(movingObject);
                 break;
             case "rod_bolt_1":
-                RodBolt1Assembly(movingObject);
+                RodBolt1AssemblyControl(movingObject);
                 break;
             case "rod_bolt_2":
-                RodBolt2Assembly(movingObject);
+                RodBolt2AssemblyControl(movingObject);
                 break;
             case "rod_cap":
-                RodCapAssembly(movingObject);
+                RodCapAssemblyControl(movingObject);
                 break;
             case "wrist_pin":
-                WristPinAssembly(movingObject);
+                WristPinAssemblyControl(movingObject);
                 break;
         }
 
     }
-    void RodAssembly(GameObject rod)
+    void RodAssemblyControl(GameObject rod)                                                                                          // Rod montaj için kontrol ediliyor
     {
-        if (Vector3.Distance(rod.transform.position + new Vector3(0, 0.06f, 0), piston.transform.position) < 0.03f)
+        if (Vector3.Distance(rod.transform.position + new Vector3(0, 0.06f, 0), piston.transform.position) < 0.03f)                  // Rod objesi montaj konumu ile olan yakýnlýðý kontrol ediliyor
         {
-            piston.transform.GetChild(0).gameObject.SetActive(true);
-            data.rodAssamblyCheck = true;
+            piston.transform.GetChild(0).gameObject.SetActive(true);                                                                  // Yakýnsa seffaf olarak montaj edilmiþ hali gösteriliyor
+            data.rodAssamblyCheck = true;                                                                                            // Montaj için uygun 
         }
         else
         {
-            piston.transform.GetChild(0).gameObject.SetActive(false);
-            data.rodAssamblyCheck = false;
-            rod.transform.parent = pistonParent.transform;
+            piston.transform.GetChild(0).gameObject.SetActive(false);                                                                // Yakýn olmadýðý için seffaf obje gizleniyor
+            data.rodAssamblyCheck = false;                                                                                           // Montaj için uygun deðil
+            rod.transform.parent = pistonParent.transform;                                                                           // Demonte edilirse ebeveyni tekrar piston olarak deðiþtirliyor
 
         }
 
 
     }
-    void WristPinAssembly(GameObject wristPin)
+    void WristPinAssemblyControl(GameObject wristPin)
     {
-        if (Vector3.Distance(wristPin.transform.position , piston.transform.position) < 0.03f)
+        if (Vector3.Distance(wristPin.transform.position , piston.transform.position + new Vector3(-0.023f, -0.01f, 0)) < 0.04f)
         {
             piston.transform.GetChild(1).gameObject.SetActive(true);
             data.wristPinAssamblyCheck = true;
@@ -107,7 +107,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
         {
             piston.transform.GetChild(1).gameObject.SetActive(false);
             data.wristPinAssamblyCheck = false;
-            rod.GetComponent<MeshCollider>().enabled = true;
+            rod.GetComponent<MeshCollider>().enabled = true;                                                                          // Wristpin demonte edilirse Rod objesi tekrar tutlabilir yapýlýyor
             wristPin.transform.parent = pistonParent.transform;
 
         }
@@ -115,9 +115,9 @@ public class PistonAssemblyIndicator : MonoBehaviour
 
     }
   
-    void PinClip1Assembly(GameObject pinClip1)
+    void PinClip1AssemblyControl(GameObject pinClip1)
     {
-        Debug.Log(Vector3.Distance(pinClip1.transform.position, piston.transform.position + new Vector3(-0.023f, -0.01f, 0)));
+        
         if (Vector3.Distance(pinClip1.transform.position, piston.transform.position + new Vector3(-0.023f, -0.01f, 0)) < 0.06f)
         {
            
@@ -135,7 +135,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
 
 
     }
-    void PinClip2Assembly(GameObject pinClip2)
+    void PinClip2AssemblyControl(GameObject pinClip2)
     {
         if (Vector3.Distance(pinClip2.transform.position, piston.transform.position + new Vector3(+0.023f, -0.01f, 0)) < 0.06f)
         {
@@ -154,7 +154,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
 
 
     }
-    void RodBearingRodSideAssembly(GameObject rodBearingRodSide)
+    void RodBearingRodSideAssemblyControl(GameObject rodBearingRodSide)
     {
         if (Vector3.Distance(rodBearingRodSide.transform.position, rod.transform.position + new Vector3(0, -0.06f, 0)) < 0.03f)
         {
@@ -170,7 +170,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
         }
            
     }
-    void RodBearingCapSideAssembly(GameObject rodBearingCapSide)
+    void RodBearingCapSideAssemblyControl(GameObject rodBearingCapSide)
     {
         if (Vector3.Distance(rodBearingCapSide.transform.position, rodCap.transform.position ) < 0.03f)
         {
@@ -187,7 +187,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
 
     }
            
-    void RodCapAssembly(GameObject rodCap)
+    void RodCapAssemblyControl(GameObject rodCap)
     {
         if (Vector3.Distance(rodCap.transform.position, rod.transform.position + new Vector3(0, -0.08f, 0) ) < 0.03f)
         {
@@ -205,7 +205,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
         }
             
     }
-    void RodBolt1Assembly(GameObject rodBolt1)
+    void RodBolt1AssemblyControl(GameObject rodBolt1)
     {
         if (Vector3.Distance(rodBolt1.transform.position, rodCap.transform.position + new Vector3(0.022f, 0.014f, -0.022f)) < 0.03f)
         {
@@ -221,7 +221,7 @@ public class PistonAssemblyIndicator : MonoBehaviour
         }
             
     }
-    void RodBolt2Assembly(GameObject rodBolt2)
+    void RodBolt2AssemblyControl(GameObject rodBolt2)
     {
        
         if (Vector3.Distance(rodBolt2.transform.position, rodCap.transform.position + new Vector3(-0.022f, 0.014f, -0.022f)) < 0.05f)
