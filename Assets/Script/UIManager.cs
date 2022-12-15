@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.successfulPanel += SuccessfulPanel;
+        EventManager.successfulPanel += SuccessfulPanel; 
     }
     private void OnDisable()
     {
